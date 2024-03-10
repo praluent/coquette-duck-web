@@ -3,8 +3,8 @@ import { S3Client, ListObjectsV2Command, GetObjectCommand } from "@aws-sdk/clien
 const s3Client = new S3Client({
     region: 'eu-west-2', // Replace with your S3 region
     credentials: {
-        accessKeyId: '*',
-        secretAccessKey: '**',
+        accessKeyId: process.env.AWS_ACCESS_ID ?? "",
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? "",
     },
     });
  
