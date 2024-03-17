@@ -1,5 +1,5 @@
 import { S3Client, ListObjectsV2Command, GetObjectCommand } from "@aws-sdk/client-s3";
- 
+
 const s3Client = new S3Client({
     region: 'eu-west-2', // Replace with your S3 region
     credentials: {
@@ -9,8 +9,8 @@ const s3Client = new S3Client({
     });
  
 export async function getOptions(){
-    
-    
+    console.log(process.env.AWS_ACCESS_ID)
+    console.log(process.env.AWS_SECRET_ACCESS_KEY)
       const command = new ListObjectsV2Command({
         Bucket: 'coquette-duck-data'
       });
