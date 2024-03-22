@@ -20,7 +20,7 @@ const highlightFunction = (status:boolean) => {
 
 type selectedOptionTuple = [string, boolean]
 interface QuizProps {
-    QuestionContent: Promise<string[][]>;
+    QuestionContent: string[][];
     numRequested: number;
 }
 export function Quiz(props: QuizProps) {
@@ -36,14 +36,12 @@ export function Quiz(props: QuizProps) {
     
 
     useEffect(() => { 
-        QuestionContent.then((content: any) => {
-            const shuffledQuestions = shuffle(content);
-            if(numRequested >= shuffledQuestions.length)
-                setQuizQuestions(shuffledQuestions);
-            else{
-                setQuizQuestions(shuffledQuestions.slice(0, numRequested));
-            }
-        });
+        const shuffledQuestions = shuffle(QuestionContent);
+        if(numRequested >= shuffledQuestions.length)
+            setQuizQuestions(shuffledQuestions);
+        else{
+            setQuizQuestions(shuffledQuestions.slice(0, numRequested));
+        }
     }, [QuestionContent, numRequested])
     
 

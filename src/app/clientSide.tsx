@@ -1,7 +1,7 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { _Object } from "@aws-sdk/client-s3";
-import { getOptions, getQuestions, getTopics } from "./serverQuizComponents";
+import { getOptions, getTopics ,getQuestions } from "./serverQuizComponents";
 import Quiz from './Quiz';
 
 interface QuizButtonProps {
@@ -20,7 +20,7 @@ export function SubmitButton({ closeModal }: { closeModal: () => void }) {
     )
 }
 
-export function SelectFiles({ options, folderName, onSelectionChange, onNumQuestionsChange }: { options: string[]; folderName: string; onSelectionChange: (selection: string[]) => void; onNumQuestionsChange: (num: number) => void }) {
+export function SelectFiles({ options, folderName, onSelectionChange, onNumQuestionsChange, closeDialog }: { options: string[]; folderName: string; onSelectionChange: (selection: string[]) => void; onNumQuestionsChange: (num: number) => void; closeDialog: () => void }) {
     const [checkedOptions, setCheckedOptions] = useState<CheckedBoxesState>({});
     const [selection, setSelection] = useState<string[]>([]);
     const [numQuestions, setNumQuestions] = useState<number>(0);
@@ -40,7 +40,7 @@ export function SelectFiles({ options, folderName, onSelectionChange, onNumQuest
         setSelection(temporaryOptionList);
         onSelectionChange(temporaryOptionList); // Pass selection to parent component
         onNumQuestionsChange(numQuestions);
-        document.getElementById('generate')?.close();
+        closeDialog();
 
     }
     const handleCheckboxChange = (option: string) => {
@@ -74,7 +74,7 @@ export function SelectFiles({ options, folderName, onSelectionChange, onNumQuest
     );
 }
 
-export function SelectFolder({ options, onSelectionChange, onNumQuestionsChange }: { options: _Object[]; onSelectionChange: (selection: string[]) => void; onNumQuestionsChange: (num: number) => void}) {
+export function SelectFolder({ options, onSelectionChange, onNumQuestionsChange, onCloseDialog }: { options: _Object[]; onSelectionChange: (selection: string[]) => void; onNumQuestionsChange: (num: number) => void; onCloseDialog: () => void}) {
     const [selectedFolder, setFolderSelection] = useState<string>("");
     const [fileTitles, setFileTitles] = useState<string[]>([]);
 
@@ -90,7 +90,7 @@ export function SelectFolder({ options, onSelectionChange, onNumQuestionsChange 
 
     useEffect(() => {
         if (selectedFolder !== "") {
-            getTopics(selectedFolder).then((topics) => {
+            getTopics(selectedFolder).then((topics:any) => {
                 if (topics !== undefined) {
                     setFileTitles(topics);
                 }
@@ -104,25 +104,18 @@ export function SelectFolder({ options, onSelectionChange, onNumQuestionsChange 
                 <option disabled value="">Select Folder</option>
                 {clickableOptions}
             </select>
-            {selectedFolder !== "" && fileTitles !== undefined && <SelectFiles options={fileTitles} folderName={selectedFolder} onSelectionChange={onSelectionChange} onNumQuestionsChange={onNumQuestionsChange}/>}
+            {selectedFolder !== "" && fileTitles !== undefined && <SelectFiles options={fileTitles} folderName={selectedFolder} onSelectionChange={onSelectionChange} onNumQuestionsChange={onNumQuestionsChange} closeDialog={onCloseDialog}/>}
         </div>
 
     )
 }
 
-export function QuizForm({ onSelectionChange, onNumQuestionsChange }: { onSelectionChange: (selection: string[]) => void; onNumQuestionsChange: (num: number) => void }) {
-    const [folderResults, setFolderResults] = useState<_Object[]>([]);
+export function QuizForm({ onSelectionChange, onNumQuestionsChange, folderResults, closeDialog }: { onSelectionChange: (selection: string[]) => void; onNumQuestionsChange: (num: number) => void; folderResults: _Object[]; closeDialog: () => void}) {
     
-    useEffect (() => {
-    getOptions().then((options)=>{    
-        if(options !== undefined){
-            setFolderResults(options);
-        }
-    })}, [])
 
     return (
         <div>
-            <SelectFolder options={folderResults} onSelectionChange={onSelectionChange} onNumQuestionsChange={onNumQuestionsChange}/>
+            <SelectFolder options={folderResults} onSelectionChange={onSelectionChange} onNumQuestionsChange={onNumQuestionsChange} onCloseDialog={closeDialog}/>
         </div>  
     )
 }
@@ -141,19 +134,38 @@ export const QuizButton: React.FC<QuizButtonProps> = ({ toggleForm }) => {
 
 export default function ClientHome() {
     const [showForm, setForm] = useState<boolean>(false);
-    const [selection, setSelection] = useState<string[]>([]);
     const [numRequested, setNumRequested] = useState<number>(0);
+    const [folderResults, setFolderResults] = useState<_Object[]>([]);
+    const [fetchedQuestions, setFetchedQuestions] = useState<string[][] | null>(null);
+    const dialogRef = useRef<HTMLDialogElement>(null);
     function openModal(){
-        setForm(!showForm);
-        document.getElementById('generate')?.showModal();
+        setForm(false);
+        setNumRequested(0);
+        setFolderResults([]);
+        setFetchedQuestions(null);
+
+        getOptions().then((options:any) => {
+            setForm(!showForm);
+            setFolderResults(options);
+            dialogRef.current?.showModal()
+
+        })
+        
     }
-    
+    function closeModalfromChild(){
+        dialogRef.current?.close();
+    }
+
     function closeModal() {
+        
         setForm(false);
     }
 
     function handleSelectionChange(selection: string[]) {
-        setSelection(selection);
+        getQuestions(selection).then((questions:any) => {
+            setFetchedQuestions(questions);
+
+        });
     }
 
     function handleNumQuestionsChange(num: number) {
@@ -166,10 +178,10 @@ export default function ClientHome() {
             <h1 className= "font-bold pb-24">Inshallah he gets a first</h1>
             <QuizButton toggleForm={openModal} />
             <div>
-                <dialog id="generate" className="modal">
+                <dialog ref ={dialogRef} id="generate" className="modal">
                     <div className="modal-box bg-primary dark:bg-success dark:text-primary text-success">
                         <h3 className="font-bold text-lg">Generate Questions</h3>
-                        <QuizForm onSelectionChange={handleSelectionChange} onNumQuestionsChange={handleNumQuestionsChange} />
+                        <QuizForm onSelectionChange={handleSelectionChange} onNumQuestionsChange={handleNumQuestionsChange} folderResults={folderResults} closeDialog={closeModalfromChild}/>
                     </div>
                     <form method="dialog" className="modal-backdrop">
                         <button onClick={closeModal}>Close</button>
@@ -177,7 +189,7 @@ export default function ClientHome() {
                 </dialog>
             </div>
             <div id='selection' className='dark:text-slate-400 text-slate-800'>
-                <Quiz QuestionContent = {getQuestions(selection)} numRequested={numRequested}/>
+                {fetchedQuestions !== null && <Quiz QuestionContent = {fetchedQuestions} numRequested={numRequested}/>}
             </div>
         </main>
     );
