@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="en" data-theme="fuji">
       
       <body className={inter.className}>
-        <div className="dark:bg-slate-800">
+        <div className="dark:bg-[#FCFCFC] h-screen w-screen">
           {children}
         </div>
       </body>

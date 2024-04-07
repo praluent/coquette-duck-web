@@ -8,7 +8,7 @@ export default function Home() {
   
 
   return (
-    <main className="dark:bg-info bg-primary dark:text-slate-400 text-slate-600 min-h-screen flex-col items-center justify-between">
+    <main className="">
       <ClientHome />
     </main>
   );

@@ -6,7 +6,15 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  
+  theme: {
+    extend:{
+      colors: {
+        banner: {
+          DEFAULT: "#004976"},
+        
+      },
+    },
+  },
   plugins: [require("daisyui")],
   daisyui: {
     themes: [

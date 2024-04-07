@@ -7,7 +7,7 @@ interface AnswerProps {
 
 export function Answer({ question, response }: AnswerProps) {
     const [prompt, options, correct] = question;
-
+    const filteredOptions = options.filter((option) => option !== undefined);
     const isCorrect = (value: string): string => {
         if (value.toLowerCase() === correct.toLowerCase().replace(/^[a-z]\. /, '')) {
             return 'lightgreen';
@@ -17,14 +17,18 @@ export function Answer({ question, response }: AnswerProps) {
     };
 
     const isChecked = (value: string): boolean => {
-        return value.toLowerCase() === response[0].toLowerCase().replace(/^[a-z]\. /, '');
+        if (response === undefined){
+            return false
+        } else{
+            return value.toLowerCase() === response[0].toLowerCase().replace(/^[a-z]\. /, '');
+        }
     };
 
     return (
         <div>
             <h2>{prompt}</h2>
             <div id="options-container">
-                {options.map((option: string, index: number) => (
+                {filteredOptions.map((option: string, index: number) => (
                     <div className="option" key={prompt + index}>
                         {isCorrect(option) && <label className='label cursor-pointer rounded-full my-1 bg-lime-400'>
                             <span className='label-text ml-2 text-info dark:text-primary'>{option}</span>

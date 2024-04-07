@@ -22,18 +22,22 @@ type selectedOptionTuple = [string, boolean]
 interface QuizProps {
     QuestionContent: string[][];
     numRequested: number;
+    currentQuestionIndex: number;
+    setCurrentQuestionIndex: React.Dispatch<React.SetStateAction<number>>;
+    currentAnswerIndex: number;
+    setCurrentAnswerIndex: React.Dispatch<React.SetStateAction<number>>;
+    quizQuestions: string[][];
+    setQuizQuestions: React.Dispatch<React.SetStateAction<string[][]>>;
+    responses: selectedOptionTuple[];
+    setResponse: React.Dispatch<React.SetStateAction<selectedOptionTuple[]>>;
+    selectedOption: selectedOptionTuple;
+    setSelectedOption: React.Dispatch<React.SetStateAction<selectedOptionTuple>>;
 }
 export function Quiz(props: QuizProps) {
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [selectedOption, setSelectedOption] = useState<selectedOptionTuple>(["", false]);
-    const [responses, setResponse] = useState<selectedOptionTuple[]>([]);
     const [showReview, setReview] = useState<boolean>(false);
-    const [currentAnswerIndex, setCurrentAnswerIndex] = useState<number>(-1);
     const [done, finish] = useState<boolean>(false);
-    const [quizQuestions, setQuizQuestions] = useState<string[][]>([]);
-    const { QuestionContent, numRequested } = props;
-
-    
+    const { QuestionContent, numRequested, currentQuestionIndex,
+    setCurrentQuestionIndex, currentAnswerIndex, setCurrentAnswerIndex, quizQuestions, setQuizQuestions, responses, setResponse, selectedOption, setSelectedOption } = props;
 
     useEffect(() => { 
         const shuffledQuestions = shuffle(QuestionContent);
@@ -106,7 +110,7 @@ export function Quiz(props: QuizProps) {
     </div>
 
     return (
-        <div className=''> 
+        
     <div className=""> {/* Adjust max-width according to your layout */}
         {currentAnswerIndex > -1 && <h4 id="answer-counter">question number: {currentAnswerIndex+1} / {quizQuestions.length}</h4>}
         <div>
@@ -122,21 +126,20 @@ export function Quiz(props: QuizProps) {
                         </div>
                     )}
                 </div>
+                
             )}
             {!done && (
                 <div id="next-previous" className='mt-6'>
-                    {currentQuestionIndex !== 0 && !showReview && (
-                        <button className="btn bg-accent text-success mr-1" id="previous-button" onClick={goToPreviousQuestion}>Previous</button>
-                    )}
+                  
                     {currentQuestionIndex < quizQuestions.length - 1 && !showReview && (
-                        <button className="btn btn-accent text-success" id="next-button" onClick={goToNextQuestion}>Next</button>
+                        <button className="text-white px-2 border border-black rounded bg-gradient-to-b from-[#5490CC] to-[#004976] hover:from-[#004976] hover:to-[#5490CC] mx-auto" id="next-button" onClick={goToNextQuestion}>Proceed to Next Item</button>
                     )}
                     {currentQuestionIndex === quizQuestions.length - 1 && !showReview && (
-                        <button className="btn bg-accent text-success" id="submit-button" onClick={handleSubmit}>Submit</button>
+                        <button className="text-white px-2 border border-black rounded bg-gradient-to-b from-[#5490CC] to-[#004976] hover:from-[#004976] hover:to-[#5490CC] mx-auto" id="submit-button" onClick={handleSubmit}>Submit</button>
                     )}
                 </div>
             )}
-        </div>
+        
 
         <div id="review">
             {showReview && currentAnswerIndex === -1 && (
