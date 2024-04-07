@@ -4,7 +4,7 @@ import { _Object } from "@aws-sdk/client-s3";
 import { getOptions, getTopics ,getQuestions } from "./serverQuizComponents";
 import Quiz from './Quiz';
 import NavBar from './NavBar';
-import { NextIcon, PrevIcon, MarkFlagIcon, EndBlockIcon, LabValuesIcon, GenerateQuizIcon } from './Icons';
+import { NextIcon, PrevIcon, MarkFlagIcon, EndBlockIcon, LabValuesIcon, GenerateQuizIcon, WhiteWomanMusicIcon } from './Icons';
 import LabValues from './LabValues';
 import LabHeaders from './LabHeaders';
 
@@ -227,6 +227,9 @@ export default function ClientHome() {
                     <br />
                     <br />
                     <p className='text-xs'>The following software is purely for educational non-profit use and is covered by Fair Use AFAIK... Any questions, concerns, or bugs can be sent to: syeda7d5@gmail.com. please don't spam it.</p>
+                    <br />
+                    <br />
+                    <p className='text-xs'><a className='text-cyan-600 underline' href='https://youtu.be/LHaEub0kxOw?si=8TPgJChjSixhUe1X'>apologies in advance</a> for any offense generated, however small</p>
                 </div>}
 
                 {quizQuestions.length ===0 && <QuizButton toggleForm={openModal} />}
@@ -288,6 +291,13 @@ export default function ClientHome() {
                     <button onClick={openModal}>
                         <GenerateQuizIcon />
                     </button>
+                </div>
+                <div className='flex justify-end rounded hover:bg-slate-200 px-2'>
+                    <a href='https://www.youtube.com/watch?v=b1kbLwvqugk'>
+                        <WhiteWomanMusicIcon />
+                    </a>
+
+
                 </div>
                 <div className='flex justify-end rounded hover:bg-slate-200 px-2'>
                     <button onClick={()=> closeBlockRef.current?.showModal()}>

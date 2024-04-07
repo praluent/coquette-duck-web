@@ -87,6 +87,18 @@ export function GenerateQuizIcon(){
     )
 
 }
+export function WhiteWomanMusicIcon(){
+    return( 
+    <div className='flex flex-col items-end justify-end text-sm text-slate-200 hover:text-slate-600'>
+        <svg  width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className='mx-auto'>
+            <circle cx="5.5" cy="17.5" r="2.5"/><circle cx="17.5" cy="15.5" r="2.5"/><path d="M8 17V5l12-2v12"/>
+        </svg>
+        <p>White Woman Music</p>
+    </div>
+    )
+
+
+}
 export function MarkFlagIcon(){
     return(
         <svg width="24" height="20" viewBox="0 0 24 20">
