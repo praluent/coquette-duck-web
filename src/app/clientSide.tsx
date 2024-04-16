@@ -27,6 +27,7 @@ export function SubmitButton({ closeModal }: { closeModal: () => void }) {
 export function SelectFiles({ options, folderName, onSelectionChange, onNumQuestionsChange, closeDialog }: { options: string[]; folderName: string; onSelectionChange: (selection: string[]) => void; onNumQuestionsChange: (num: number) => void; closeDialog: () => void }) {
     const [checkedOptions, setCheckedOptions] = useState<CheckedBoxesState>({});
     const [selection, setSelection] = useState<string[]>([]);
+    const [selectAll, setSelectAll] = useState(false);
     const [numQuestions, setNumQuestions] = useState<number>(0);
     const formattedFolderName = folderName.slice(0, -1);
     
@@ -54,7 +55,27 @@ export function SelectFiles({ options, folderName, onSelectionChange, onNumQuest
         }));
     };
 
-    const checkBoxes = filteredOptions.map((option, index) => (
+    const handleSelectAllChange = () => {
+        setSelectAll(prevState => !prevState);
+        const newCheckedOptions = {};
+        for (const option of filteredOptions) {
+            newCheckedOptions[option] = !selectAll;
+        }
+        setCheckedOptions(newCheckedOptions);
+    };
+
+    const selectAllCheckbox = (
+        <div className="flex items-start mb-4 ">
+            <label className="cursor-pointer flex items-start">
+                <input type="checkbox" className="checkbox checkbox-sm mt-1 mr-2 checkbox-accent"
+                checked={selectAll} // Set checked attribute based on state
+                onChange={handleSelectAllChange} />
+                <span className="label-text dark:text-secondary text-info">Select All</span>
+            </label>
+        </div>
+    );
+   
+    const checkBoxes = [selectAllCheckbox, ...filteredOptions.map((option, index) => (
         <div key={folderName + option + index} className="flex items-start mb-4 ">
             <label className="cursor-pointer flex items-start">
                 <input type="checkbox" className="checkbox checkbox-sm mt-1 mr-2 checkbox-accent"
@@ -63,7 +84,8 @@ export function SelectFiles({ options, folderName, onSelectionChange, onNumQuest
                 <span className="label-text dark:text-secondary text-info">{option.replace(regex, "$1").replace(/_/g, " ")}</span>
             </label>
         </div>
-    ));
+    ))];
+
     function handleNumQuestions(event:React.ChangeEvent<HTMLInputElement>){
         setNumQuestions(Number(event.target.value))
     }
