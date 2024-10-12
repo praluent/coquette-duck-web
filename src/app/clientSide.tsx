@@ -4,10 +4,9 @@ import { _Object } from "@aws-sdk/client-s3";
 import { getOptions, getTopics ,getQuestions } from "./serverQuizComponents";
 import Quiz from './Quiz';
 import NavBar from './NavBar';
-import { NextIcon, PrevIcon, MarkFlagIcon, EndBlockIcon, LabValuesIcon, GenerateQuizIcon, WhiteWomanMusicIcon } from './Icons';
+import { NextIcon, PrevIcon, MarkFlagIcon, EndBlockIcon, LabValuesIcon, GenerateQuizIcon, CulturalEnrichment } from './Icons';
 import LabValues from './LabValues';
 import LabHeaders from './LabHeaders';
-
 interface QuizButtonProps {
     toggleForm: () => void;
     
@@ -57,7 +56,7 @@ export function SelectFiles({ options, folderName, onSelectionChange, onNumQuest
 
     const handleSelectAllChange = () => {
         setSelectAll(prevState => !prevState);
-        const newCheckedOptions = {};
+        const newCheckedOptions: { [key: string]: boolean } = {}; // Add index signature
         for (const option of filteredOptions) {
             newCheckedOptions[option] = !selectAll;
         }
@@ -147,12 +146,18 @@ export function QuizForm({ onSelectionChange, onNumQuestionsChange, folderResult
 }
 
 export const QuizButton: React.FC<QuizButtonProps> = ({ toggleForm }) => {
+    const audioRef = useRef<HTMLMediaElement>(null);
+   
+    const handleClick = () => {
+        audioRef.current?.play();
+        toggleForm();
+    }
+    
     return (
         <div>
-            <button className="bg-blue-300 hover:bg-blue-100 text-blue-50 hover:text-blue-300 border-blue-300 font-bold py-2 px-4 rounded border-4 inline-flex items-center absolute top-20 right-20" onClick={toggleForm}>
-                <svg className="h-20 w-20" fill="currentColor" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"/>
-                </svg>
+            <button className="inline-flex items-center absolute top-20 right-20 bg-blue-300 rounded-lg border border-blue-300 p-2 text-white" onClick={handleClick}>
+                Generate Quiz
+                <audio ref={audioRef} src="/resources/StartupSound.wav"></audio>
             </button>
         </div>
     );
@@ -244,14 +249,14 @@ export default function ClientHome() {
             <div className="flex-1 pl-20">        
                 {!fetchedQuestions && 
                 <div>
-                    <h1 className="text-xl font-bold">(Honorary) Hajji Head Brother Muhammad Shoaib Shahbaz's Quiz Generator</h1>
-                    <h1 className= "font-bold pb-24">Inshallah he gets a first</h1>
+                    <h1 className="text-xl font-bold">you know why you're here</h1>
+                    <h1 className= "font-bold pb-24"></h1>
                     <br />
                     <br />
-                    <p className='text-xs'>The following software is purely for educational non-profit use and is covered by Fair Use AFAIK... Any questions, concerns, or bugs can be sent to: syeda7d5@gmail.com. please don't spam it.</p>
+                    <p className='text-xs'>The following software is purely for educational non-profit use and is covered by Fair Use AFAIK (please don't tell on me)... Any questions, concerns, or bugs can be sent to: syeda7d5@gmail.com. please don't spam it.</p>
                     <br />
                     <br />
-                    <p className='text-xs'><a className='text-cyan-600 underline' href='https://youtu.be/LHaEub0kxOw?si=8TPgJChjSixhUe1X'>apologies in advance</a> for any offense generated, however small</p>
+
                 </div>}
 
                 {quizQuestions.length ===0 && <QuizButton toggleForm={openModal} />}
@@ -315,8 +320,8 @@ export default function ClientHome() {
                     </button>
                 </div>
                 <div className='flex justify-end rounded hover:bg-slate-200 px-2'>
-                    <a href='https://www.youtube.com/watch?v=b1kbLwvqugk'>
-                        <WhiteWomanMusicIcon />
+                    <a href='https://youtu.be/xILQRZ1F1OE?si=rutTsNj-VwwOedXM'>
+                        <CulturalEnrichment />
                     </a>
 
 
